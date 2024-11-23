@@ -19,9 +19,9 @@ public interface PropertiesOTARepository extends JpaRepository<PropertiesOTA, Lo
 
     @Query(value = """
             
-            select p.id as "prefectureId", p.name_gr as "prefectureName", sum(p2.properties) as "totalProperties" from propertiesota p2
-            join ota o on p2.ota_id = o.id
-            join prefecture p on o.prefecture_id = p.id
+            select p.id as "prefectureId", p.name_gr as "prefectureName", sum(p2.properties) as "totalProperties" from ota_observatory.propertiesota p2
+            join ota_observatory.ota o on p2.ota_id = o.id
+            join ota_observatory.prefecture p on o.prefecture_id = p.id
             where (:date between p2.create_date and p2.last_check_date)
             group by p.name_gr, p.id;
             """
@@ -30,9 +30,9 @@ public interface PropertiesOTARepository extends JpaRepository<PropertiesOTA, Lo
 
     @Query(value = """
             
-            select p.id as "prefectureId", p.name_gr as "prefectureName", sum(p2.properties) as "totalProperties" from propertiesota p2
-            join ota o on p2.ota_id = o.id
-            join prefecture p on o.prefecture_id = p.id
+            select p.id as "prefectureId", p.name_gr as "prefectureName", sum(p2.properties) as "totalProperties" from ota_observatory.propertiesota p2
+            join ota_observatory.ota o on p2.ota_id = o.id
+            join ota_observatory.prefecture p on o.prefecture_id = p.id
             where (:date between p2.create_date and p2.last_check_date) and p.id = :prefectureId
             group by p.name_gr, p.id;
             """
@@ -44,7 +44,7 @@ public interface PropertiesOTARepository extends JpaRepository<PropertiesOTA, Lo
 
     @Query(value = """
             
-            select p2.update_date as "lastUpdateDate" from propertiesota p2
+            select p2.update_date as "lastUpdateDate" from ota_observatory.propertiesota p2
             where (p2.last_check_date between :firstMonthDayDate and :lastMonthDayDate)
             limit 1;
             """, nativeQuery = true)
@@ -56,7 +56,7 @@ public interface PropertiesOTARepository extends JpaRepository<PropertiesOTA, Lo
 
     @Query(value = """
             
-            select p2.update_date as "lastUpdateDate" from propertiesota p2
+            select p2.update_date as "lastUpdateDate" from ota_observatory.propertiesota p2
             order by p2.update_date desc limit 1;
             """, nativeQuery = true)
     Optional<LocalDate> getLastPropertiesDate();

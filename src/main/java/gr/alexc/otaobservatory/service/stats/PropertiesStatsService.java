@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -26,11 +27,8 @@ public class PropertiesStatsService {
         if (dateOptional.isPresent()) {
             searchDate = dateOptional.get();
         } else {
-            searchDate = statsUtilsService.getLastMonthData(OTAVariable.PROPERTIES).orElseThrow(() -> new VariableDataNotAvailable(OTAVariable.PROPERTIES));
-            searchDate = propertiesOTARepository.getLastPropertiesDateForMonth(
-                    statsUtilsService.getFirstDayOfMonthDate(searchDate),
-                    statsUtilsService.getLastDayOfMonthDate(searchDate)
-            ).orElseThrow(() -> new VariableDataNotAvailable(OTAVariable.PROPERTIES));
+            searchDate = LocalDate.of(2024, Month.JANUARY,5);
+
         }
         List<PropertiesByPrefecture> results = propertiesOTARepository.getPropertiesByPrefecturePerMonth(searchDate)
                 .stream().sorted(Comparator.comparing(PropertiesByPrefecture::getTotalProperties).reversed()).toList();

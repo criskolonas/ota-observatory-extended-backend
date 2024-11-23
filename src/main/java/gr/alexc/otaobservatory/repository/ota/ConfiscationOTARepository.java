@@ -19,9 +19,9 @@ public interface ConfiscationOTARepository extends JpaRepository<ConfiscationOTA
 
     @Query(value = """
             
-            select p.id as "prefectureId", p.name_gr as "prefectureName", sum(c.confiscations) as "totalConfiscations" from confiscationota c
-            join ota o on c.ota_id = o.id
-            join prefecture p on o.prefecture_id = p.id
+            select p.id as "prefectureId", p.name_gr as "prefectureName", sum(c.confiscations) as "totalConfiscations" from ota_observatory.confiscationota c
+            join ota_observatory.ota o on c.ota_id = o.id
+            join ota_observatory.prefecture p on o.prefecture_id = p.id
             where (:date between c.create_date and c.last_check_date)
             group by p.name_gr, p.id;
             """
@@ -30,9 +30,9 @@ public interface ConfiscationOTARepository extends JpaRepository<ConfiscationOTA
 
     @Query(value = """
             
-            select p.id as "prefectureId", p.name_gr as "prefectureName", sum(c.confiscations) as "totalConfiscations" from confiscationota c
-            join ota o on c.ota_id = o.id
-            join prefecture p on o.prefecture_id = p.id
+            select p.id as "prefectureId", p.name_gr as "prefectureName", sum(c.confiscations) as "totalConfiscations" from ota_observatory.confiscationota c
+            join ota_observatory.ota o on c.ota_id = o.id
+            join ota_observatory.prefecture p on o.prefecture_id = p.id
             where (:date between c.create_date and c.last_check_date) and p.id = :prefectureId
             group by p.name_gr, p.id;
             """
@@ -44,7 +44,7 @@ public interface ConfiscationOTARepository extends JpaRepository<ConfiscationOTA
 
     @Query(value = """
             
-            select c.update_date as "lastUpdateDate" from confiscationota c
+            select c.update_date as "lastUpdateDate" from ota_observatory.confiscationota c
             where (c.last_check_date between :firstMonthDayDate and :lastMonthDayDate)
             limit 1;
             """, nativeQuery = true)
@@ -56,7 +56,7 @@ public interface ConfiscationOTARepository extends JpaRepository<ConfiscationOTA
 
     @Query(value = """
             
-            select c.update_date as "lastUpdateDate" from confiscationota c
+            select c.update_date as "lastUpdateDate" from ota_observatory.confiscationota c
             order by c.update_date desc limit 1;
             """, nativeQuery = true)
     Optional<LocalDate> getLastConfiscationDate();

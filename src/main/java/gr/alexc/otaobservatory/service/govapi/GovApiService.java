@@ -91,6 +91,8 @@ public class GovApiService {
 
         var areas = response.getBody();
 
+        System.out.println(areas);
+
         Map<Date, List<AreaRecord>> responseMap = new HashMap<>();
 
         if (areas != null) {

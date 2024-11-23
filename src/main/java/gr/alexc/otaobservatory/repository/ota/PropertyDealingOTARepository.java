@@ -19,9 +19,9 @@ public interface PropertyDealingOTARepository extends JpaRepository<PropertyDeal
 
     @Query(value = """
             
-            select p.id as "prefectureId", p.name_gr as "prefectureName", sum(pd.property_deals) as "totalPropertyDealing" from  property_dealingota pd
-            join ota o on pd.ota_id = o.id
-            join prefecture p on o.prefecture_id = p.id
+            select p.id as "prefectureId", p.name_gr as "prefectureName", sum(pd.property_deals) as "totalPropertyDealing" from  ota_observatory.property_dealingota pd
+            join ota_observatory.ota o on pd.ota_id = o.id
+            join ota_observatory.prefecture p on o.prefecture_id = p.id
             where (:date between pd.create_date and pd.last_check_date)
             group by p.name_gr, p.id;
             """
@@ -30,9 +30,9 @@ public interface PropertyDealingOTARepository extends JpaRepository<PropertyDeal
 
     @Query(value = """
             
-            select p.id as "prefectureId", p.name_gr as "prefectureName", sum(pd.property_deals) as "totalPropertyDealing" from  property_dealingota pd
-            join ota o on pd.ota_id = o.id
-            join prefecture p on o.prefecture_id = p.id
+            select p.id as "prefectureId", p.name_gr as "prefectureName", sum(pd.property_deals) as "totalPropertyDealing" from  ota_observatory.property_dealingota pd
+            join ota_observatory.ota o on pd.ota_id = o.id
+            join ota_observatory.prefecture p on o.prefecture_id = p.id
             where (:date between pd.create_date and pd.last_check_date) and p.id = :prefectureId
             group by p.name_gr, p.id;
             """
@@ -44,7 +44,7 @@ public interface PropertyDealingOTARepository extends JpaRepository<PropertyDeal
 
     @Query(value = """
             
-            select pd.update_date as "lastUpdateDate" from  property_dealingota pd
+            select pd.update_date as "lastUpdateDate" from  ota_observatory.property_dealingota pd
             where (pd.last_check_date between :firstMonthDayDate and :lastMonthDayDate)
             limit 1;
             """, nativeQuery = true)
@@ -56,7 +56,7 @@ public interface PropertyDealingOTARepository extends JpaRepository<PropertyDeal
 
     @Query(value = """
             
-            select pd.update_date as "lastUpdateDate" from property_dealingota pd
+            select pd.update_date as "lastUpdateDate" from ota_observatory.property_dealingota pd
             order by pd.update_date desc limit 1;
             """, nativeQuery = true)
     Optional<LocalDate> getLastPropertyDealingDate();

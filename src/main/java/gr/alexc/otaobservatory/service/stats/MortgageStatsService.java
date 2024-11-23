@@ -49,10 +49,8 @@ public class MortgageStatsService {
             searchToDate = toDate.get();
         } else {
             searchToDate = statsUtilsService.getLastMonthData(OTAVariable.MORTGAGES).orElseThrow(() -> new VariableDataNotAvailable(OTAVariable.MORTGAGES));
-            searchToDate = mortgageOTARepository.getLastMortgageDateForMonth(
-                    statsUtilsService.getFirstDayOfMonthDate(searchToDate),
-                    statsUtilsService.getLastDayOfMonthDate(searchToDate)
-            ).orElseThrow(() -> new VariableDataNotAvailable(OTAVariable.MORTGAGES));
+            System.out.println(searchToDate);
+
         }
 
         List<LocalDate> searchDates = statsUtilsService.getMonthsList(searchFromDate, searchToDate);

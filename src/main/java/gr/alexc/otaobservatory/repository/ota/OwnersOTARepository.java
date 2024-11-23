@@ -16,9 +16,9 @@ public interface OwnersOTARepository extends JpaRepository<OwnersOTA, Long> {
     Optional<OwnersOTA> getLastOwnerOTA(@Param("otaId") Long otaId);
     @Query(value = """
             
-            select p.id as "prefectureId", p.name_gr as "prefectureName", sum(o2.owners) as "totalOwners" from ownersota o2
-            join ota o on o2.ota_id = o.id
-            join prefecture p on o.prefecture_id = p.id
+            select p.id as "prefectureId", p.name_gr as "prefectureName", sum(o2.owners) as "totalOwners" from ota_observatory.ownersota o2
+            join ota_observatory.ota o on o2.ota_id = o.id
+            join ota_observatory.prefecture p on o.prefecture_id = p.id
             where (:date between o2.create_date and o2.last_check_date)
             group by p.name_gr, p.id;
             """
@@ -27,9 +27,9 @@ public interface OwnersOTARepository extends JpaRepository<OwnersOTA, Long> {
 
     @Query(value = """
             
-            select p.id as "prefectureId", p.name_gr as "prefectureName", sum(o2.owners) as "totalOwners" from ownersota o2
-            join ota o on o2.ota_id = o.id
-            join prefecture p on o.prefecture_id = p.id
+            select p.id as "prefectureId", p.name_gr as "prefectureName", sum(o2.owners) as "totalOwners" from ota_observatory.ownersota o2
+            join ota_observatory.ota o on o2.ota_id = o.id
+            join ota_observatory.prefecture p on o.prefecture_id = p.id
             where (:date between o2.create_date and o2.last_check_date) and p.id = :prefectureId
             group by p.name_gr, p.id;
             """
@@ -41,7 +41,7 @@ public interface OwnersOTARepository extends JpaRepository<OwnersOTA, Long> {
 
     @Query(value = """
             
-            select o2.update_date as "lastUpdateDate" from ownersota o2
+            select o2.update_date as "lastUpdateDate" from ota_observatory.ownersota o2
             where (o2.last_check_date between :firstMonthDayDate and :lastMonthDayDate)
             limit 1;
             """, nativeQuery = true)
@@ -53,7 +53,7 @@ public interface OwnersOTARepository extends JpaRepository<OwnersOTA, Long> {
 
     @Query(value = """
             
-            select o2.update_date as "lastUpdateDate" from ownersota o2
+            select o2.update_date as "lastUpdateDate" from ota_observatory.ownersota o2
             order by o2.update_date desc limit 1;
             """, nativeQuery = true)
     Optional<LocalDate> getLastOwnerDate();

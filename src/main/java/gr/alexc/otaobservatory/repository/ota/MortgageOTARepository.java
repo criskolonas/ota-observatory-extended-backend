@@ -19,9 +19,9 @@ public interface MortgageOTARepository extends JpaRepository<MortgageOTA, Long> 
 
     @Query(value = """
             
-            select p.id as "prefectureId", p.name_gr as "prefectureName", sum(m.mortgages) as "totalMortgages" from mortgageota m
-            join ota o on m.ota_id = o.id
-            join prefecture p on o.prefecture_id = p.id
+            select p.id as "prefectureId", p.name_gr as "prefectureName", sum(m.mortgages) as "totalMortgages" from ota_observatory.mortgageota m
+            join ota_observatory.ota o on m.ota_id = o.id
+            join ota_observatory.prefecture p on o.prefecture_id = p.id
             where (:date between m.create_date and m.last_check_date)
             group by p.name_gr, p.id;
             """
@@ -30,9 +30,9 @@ public interface MortgageOTARepository extends JpaRepository<MortgageOTA, Long> 
 
     @Query(value = """
             
-            select p.id as "prefectureId", p.name_gr as "prefectureName", sum(m.mortgages) as "totalMortgages" from mortgageota m
-            join ota o on m.ota_id = o.id
-            join prefecture p on o.prefecture_id = p.id
+            select p.id as "prefectureId", p.name_gr as "prefectureName", sum(m.mortgages) as "totalMortgages" from ota_observatory.mortgageota m
+            join ota_observatory.ota o on m.ota_id = o.id
+            join ota_observatory.prefecture p on o.prefecture_id = p.id
             where (:date between m.create_date and m.last_check_date) and p.id = :prefectureId
             group by p.name_gr, p.id;
             """
@@ -44,7 +44,7 @@ public interface MortgageOTARepository extends JpaRepository<MortgageOTA, Long> 
 
     @Query(value = """
             
-            select m.update_date as "lastUpdateDate" from mortgageota m
+            select m.update_date as "lastUpdateDate" from ota_observatory.mortgageota m
             where (m.last_check_date between :firstMonthDayDate and :lastMonthDayDate)
             limit 1;
             """, nativeQuery = true)
@@ -56,7 +56,7 @@ public interface MortgageOTARepository extends JpaRepository<MortgageOTA, Long> 
 
     @Query(value = """
             
-            select m.update_date as "lastUpdateDate" from mortgageota m
+            select m.update_date as "lastUpdateDate" from ota_observatory.mortgageota m
             order by m.update_date desc limit 1;
             """, nativeQuery = true)
     Optional<LocalDate> getLastMortgageDate();

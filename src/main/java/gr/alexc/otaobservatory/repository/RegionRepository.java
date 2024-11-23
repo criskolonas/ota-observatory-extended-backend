@@ -11,9 +11,9 @@ public interface RegionRepository extends JpaRepository<Region, Long> {
     @Query(value = """
         
         select count(*) as "totalOTA"
-        from region r
-        join prefecture p on r.id = p.region_id
-        join ota o on p.id = o.prefecture_id
+        from ota_observatory.region r
+        join ota_observatory.prefecture p on r.id = p.region_id
+        join ota_observatory.ota o on p.id = o.prefecture_id
         where r.id = :id;
 """
     , nativeQuery = true)
