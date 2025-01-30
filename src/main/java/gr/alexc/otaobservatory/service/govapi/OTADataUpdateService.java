@@ -396,7 +396,7 @@ public class OTADataUpdateService {
         if (lastDateUpdateOptional.isPresent()) {
             fromDate = lastDateUpdateOptional.get().getToDate().plusDays(1);
         } else {
-            fromDate = LocalDate.of(2024, Month.NOVEMBER, 1);
+            fromDate = LocalDate.of(2024, Month.JANUARY, 1);
         }
 
         // set the to date
