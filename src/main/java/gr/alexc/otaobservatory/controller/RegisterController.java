@@ -1,7 +1,7 @@
 package gr.alexc.otaobservatory.controller;
 
 import gr.alexc.otaobservatory.dto.RegisterRequestDTO;
-import gr.alexc.otaobservatory.entity.User;
+import gr.alexc.otaobservatory.dto.RegisterResponseDTO;
 import gr.alexc.otaobservatory.service.RegisterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +17,7 @@ public class RegisterController {
 
     //TODO Create type to not contain pass in return
     @PostMapping("register")
-    public ResponseEntity<User> postUser(@RequestBody RegisterRequestDTO request) {
+    public ResponseEntity<RegisterResponseDTO> postUser(@RequestBody RegisterRequestDTO request) {
         return ResponseEntity.ok(registerService.createUser(request));
     }
 }

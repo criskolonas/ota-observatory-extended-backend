@@ -1,6 +1,7 @@
 package gr.alexc.otaobservatory.controller;
 
 import gr.alexc.otaobservatory.dto.LoginRequestDTO;
+import gr.alexc.otaobservatory.dto.LoginResponseDTO;
 import gr.alexc.otaobservatory.entity.User;
 import gr.alexc.otaobservatory.service.JWTUtilService;
 import gr.alexc.otaobservatory.service.LoginService;
@@ -19,7 +20,7 @@ public class LoginController {
     private final JWTUtilService jwtUtilService;
 
     @PostMapping("/login")
-    public ResponseEntity<User> postUser(@RequestBody LoginRequestDTO loginRequest, HttpServletResponse response) {
+    public ResponseEntity<LoginResponseDTO> postUser(@RequestBody LoginRequestDTO loginRequest, HttpServletResponse response) {
         // Authenticate the user
         User user = loginService.getUser(loginRequest.getEmail(), loginRequest.getPassword());
 
@@ -27,21 +28,24 @@ public class LoginController {
             // Generate the JWT token
             String token = jwtUtilService.generateToken(user);
 
+            LoginResponseDTO loginResponseDTO = new LoginResponseDTO(user);
+
             // Set the token as an HttpOnly cookie
             setTokenAsHttpOnlyCookie(response, token);
 
-            return ResponseEntity.ok(user);
+            return ResponseEntity.ok(loginResponseDTO);
         } else {
             return ResponseEntity.status(401).build(); // Unauthorized
         }
     }
 
     @GetMapping("/token-check")
-    public ResponseEntity<User> checkTokenValidity(@CookieValue(name = "jwtToken", required = false) String token) {
+    public ResponseEntity<LoginResponseDTO> checkTokenValidity(@CookieValue(name = "jwtToken", required = false) String token) {
         if (token != null) {
             User user = loginService.getCurrentSession(token);
             if (user != null) {
-                return ResponseEntity.ok(user);
+                LoginResponseDTO loginResponseDTO = new LoginResponseDTO(user);
+                return ResponseEntity.ok(loginResponseDTO);
             }
         }
         return ResponseEntity.status(401).build(); // Unauthorized

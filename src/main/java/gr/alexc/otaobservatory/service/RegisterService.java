@@ -1,6 +1,7 @@
 package gr.alexc.otaobservatory.service;
 
 import gr.alexc.otaobservatory.dto.RegisterRequestDTO;
+import gr.alexc.otaobservatory.dto.RegisterResponseDTO;
 import gr.alexc.otaobservatory.dto.mapper.RegisterMapper;
 import gr.alexc.otaobservatory.entity.User;
 import gr.alexc.otaobservatory.exception.UserAlreadyExistsException;
@@ -23,7 +24,7 @@ public class RegisterService {
     private final RegisterMapper registerMapper;
     private final JWTUtilService jwtUtilService;
 
-    public User createUser(RegisterRequestDTO registerRequestDTO) {
+    public RegisterResponseDTO createUser(RegisterRequestDTO registerRequestDTO) {
         Optional<User> foundUserOpt = Optional.ofNullable(loginRepository.getUserByEmail(registerRequestDTO.getEmail()));
         //if email not
         if (foundUserOpt.isEmpty()) {
@@ -39,7 +40,9 @@ public class RegisterService {
             newUserEntry.setToken(jwtToken);
             newUserEntry.setExpirationDate(jwtUtilService.extractClaim(newUserEntry.getToken(), Claims::getExpiration));
 
-            return registerMapper.registerToUser(registerRepository.save(newUserEntry));
+            registerRepository.save(newUserEntry);
+
+            return registerMapper.userToResponseDTO(newUserEntry);
 
         }
         throw new UserAlreadyExistsException("User with email " + registerRequestDTO + " already exists");
