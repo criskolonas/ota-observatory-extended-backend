@@ -17,17 +17,17 @@
 		<java.version>21</java.version>
 	</properties>
 	<dependencies>
-			<dependency>
+		<dependency>
 				<groupId>io.jsonwebtoken</groupId>
 				<artifactId>jjwt-api</artifactId>
 				<version>0.11.5</version>
 			</dependency>
-			<dependency>
+		<dependency>
 				<groupId>io.jsonwebtoken</groupId>
 				<artifactId>jjwt-impl</artifactId>
 				<version>0.11.5</version>
 			</dependency>
-			<dependency>
+		<dependency>
 				<groupId>io.jsonwebtoken</groupId>
 				<artifactId>jjwt-jackson</artifactId>
 				<version>0.11.5</version>
@@ -90,6 +90,12 @@
 			<groupId>org.mapstruct</groupId>
 			<artifactId>mapstruct</artifactId>
 			<version>1.6.0.Beta1</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.github.vladimir-bukhtoyarov/bucket4j-core -->
+		<dependency>
+			<groupId>com.bucket4j</groupId>
+			<artifactId>bucket4j_jdk17-core</artifactId>
+			<version>8.14.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

@@ -1,19 +1,24 @@
 govApi:
   url:
     confiscations: https://data.gov.gr/api/v1/query/ktm_confs
-    areas: https://data.gov.gr/datasets/ktm_harea
+    areas: https://data.gov.gr/api/v1/query/ktm_confs
     cadastralRecords: https://data.gov.gr/datasets/cadastre_plot
     mortgages: https://data.gov.gr/datasets/ktm_liens
     owners: https://data.gov.gr/datasets/ktm_owners
     properties: https://data.gov.gr/datasets/ktm_hplots
     propertyDealings: https://data.gov.gr/datasets/ktm_transactions
-  key: bcd70e6ff2b918204fd3ea4602f4fb3a1ecbeb28
+  key:
+
+security:
+  jwt:
+    secret-key:
+    expiration-time: 3600000
 
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/ota_2
-    username: springuser
-    password: 1234
+    username:
+    password:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -23,4 +28,3 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         hbm2ddl.auto: update
         default_schema: ota_observatory  # Set the default schema
-    show-sql: true
