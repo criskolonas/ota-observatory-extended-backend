@@ -2,10 +2,14 @@ package gr.alexc.otaobservatory.controller;
 
 import gr.alexc.otaobservatory.dto.LoginRequestDTO;
 import gr.alexc.otaobservatory.dto.LoginResponseDTO;
+import gr.alexc.otaobservatory.dto.mapper.LoginMapper;
 import gr.alexc.otaobservatory.entity.User;
+import gr.alexc.otaobservatory.repository.ota.LoginRepository;
 import gr.alexc.otaobservatory.service.JWTUtilService;
 import gr.alexc.otaobservatory.service.LoginService;
+import gr.alexc.otaobservatory.service.RateLimiterService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,9 +23,18 @@ public class LoginController {
 
     private final LoginService loginService;
     private final JWTUtilService jwtUtilService;
+    private final RateLimiterService rateLimiterService;
+
+    @Autowired
+    public LoginController(LoginRepository loginRepository, LoginMapper loginMapper, JWTUtilService jwtUtilService, RateLimiterService rateLimiterService, LoginService loginService, JWTUtilService jwtUtilService1) {
+        this.loginService = loginService;
+        this.jwtUtilService = jwtUtilService1;
+        this.rateLimiterService = rateLimiterService;
+    }
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> postUser(@RequestBody LoginRequestDTO loginRequest, HttpServletResponse response) {
+
         // Authenticate the user
         User user = loginService.getUser(loginRequest.getEmail(), loginRequest.getPassword());
 
@@ -42,6 +55,11 @@ public class LoginController {
 
     @PostMapping("/token-check")
     public ResponseEntity<LoginResponseDTO> checkTokenValidity(@CookieValue(name = "jwtToken", required = false) String jwtToken) {
+
+        if (!rateLimiterService.allowRequest(jwtToken)) {
+            return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).build();
+        }
+
         if (jwtToken != null ) {
             User user = loginService.getCurrentSession(jwtToken);
             if (user != null) {

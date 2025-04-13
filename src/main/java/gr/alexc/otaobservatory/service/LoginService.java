@@ -21,15 +21,7 @@ public class LoginService {
     private final LoginMapper loginMapper;
     private final JWTUtilService jwtUtilService;
 
-    /**
-     * Authenticates a user and generates a JWT token.
-     *
-     * @param email    The user's email.
-     * @param password The user's password.
-     * @return The authenticated user with a JWT token and expiration date.
-     * @throws UserNotFoundException  If the user is not found.
-     * @throws WrongPasswordException If the password is incorrect.
-     */
+
     public User getUser(String email, String password) {
         Optional<User> foundUserOpt = Optional.ofNullable(loginRepository.getUser(email, password));
 
@@ -54,16 +46,9 @@ public class LoginService {
         return loginRepository.save(userDetails);
     }
 
-    /**
-     * Validates the current session by checking the token's expiration.
-     *
-     * @param token The JWT token to validate.
-     * @return The user associated with the token.
-     * @throws UserNotFoundException  If the user is not found.
-     * @throws ExpiredTokenException  If the token has expired.
-     */
     public User getCurrentSession(String token) {
         // Extract the token's expiration date
+
         Date extractedClaimExpiration = jwtUtilService.extractClaim(token, Claims::getExpiration);
 
         // Find the user associated with the token
@@ -85,14 +70,7 @@ public class LoginService {
         return foundUserOpt.get();
     }
 
-    /**
-     * Invalidates the current session by removing the token from the user.
-     *
-     * @param token The JWT token to invalidate.
-     * @return The user with the token invalidated.
-     * @throws UserNotFoundException If the user is not found.
-     */
-    public User invalidateCurrentSession(String token) {
+    public void invalidateCurrentSession(String token) {
         // Find the user associated with the token
         Optional<User> foundUserOpt = Optional.ofNullable(loginRepository.getUserByExpirationToken(token));
         if (foundUserOpt.isEmpty()) {
@@ -106,6 +84,5 @@ public class LoginService {
             loginRepository.save(foundUser);
         });
 
-        return foundUserOpt.get();
     }
 }
