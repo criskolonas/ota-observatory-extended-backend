@@ -6,6 +6,7 @@ import gr.alexc.otaobservatory.entity.User;
 import gr.alexc.otaobservatory.service.JWTUtilService;
 import gr.alexc.otaobservatory.service.LoginService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,16 +40,16 @@ public class LoginController {
         }
     }
 
-    @GetMapping("/token-check")
-    public ResponseEntity<LoginResponseDTO> checkTokenValidity(@CookieValue(name = "jwtToken", required = false) String token) {
-        if (token != null) {
-            User user = loginService.getCurrentSession(token);
+    @PostMapping("/token-check")
+    public ResponseEntity<LoginResponseDTO> checkTokenValidity(@CookieValue(name = "jwtToken", required = false) String jwtToken) {
+        if (jwtToken != null ) {
+            User user = loginService.getCurrentSession(jwtToken);
             if (user != null) {
                 LoginResponseDTO loginResponseDTO = new LoginResponseDTO(user);
                 return ResponseEntity.ok(loginResponseDTO);
             }
         }
-        return ResponseEntity.status(401).build(); // Unauthorized
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // Unauthorized
     }
 
     @GetMapping("/logout")
@@ -77,6 +78,8 @@ public class LoginController {
 
         // Set the cookie path
         cookie.setPath("/");
+
+        cookie.setAttribute("SameSite", "None");
 
         // Set the cookie expiration time (in seconds)
         cookie.setMaxAge((int) (jwtUtilService.getExpirationTime() / 1000));

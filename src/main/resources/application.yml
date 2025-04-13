@@ -14,6 +14,15 @@ security:
     secret-key:
     expiration-time: 3600000
 
+server:
+  port: 8080
+  ssl:
+    enabled: true
+    key-store: classpath:keystore.p12
+    key-store-password: changeit
+    key-store-type: PKCS12
+    key-alias: springboot
+
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/ota_2

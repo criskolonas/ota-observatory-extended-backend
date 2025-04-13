@@ -13,6 +13,6 @@ public class LoginResponseDTO {
 
     public LoginResponseDTO(User user) {
         this.username = user.getUsername();
-        this.email = user.getPassword();
+        this.email = user.getEmail();
     }
 }
