@@ -4,6 +4,9 @@ import gr.alexc.otaobservatory.dto.LoginRequestDTO;
 import gr.alexc.otaobservatory.dto.LoginResponseDTO;
 import gr.alexc.otaobservatory.dto.mapper.LoginMapper;
 import gr.alexc.otaobservatory.entity.User;
+import gr.alexc.otaobservatory.exception.ExpiredTokenException;
+import gr.alexc.otaobservatory.exception.RateLimitReachedException;
+import gr.alexc.otaobservatory.exception.UserNotFoundException;
 import gr.alexc.otaobservatory.repository.ota.LoginRepository;
 import gr.alexc.otaobservatory.service.JWTUtilService;
 import gr.alexc.otaobservatory.service.LoginService;
@@ -15,7 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,7 +35,7 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDTO> postUser(@RequestBody LoginRequestDTO loginRequest, HttpServletResponse response) {
+    public ResponseEntity<LoginResponseDTO> postUser(@RequestBody LoginRequestDTO loginRequest, HttpServletResponse response) throws UserNotFoundException {
 
         // Authenticate the user
         User user = loginService.getUser(loginRequest.getEmail(), loginRequest.getPassword());
@@ -49,29 +51,29 @@ public class LoginController {
 
             return ResponseEntity.ok(loginResponseDTO);
         } else {
-            return ResponseEntity.status(401).build(); // Unauthorized
+            throw new UserNotFoundException("Incorrect email or password.");
         }
     }
 
     @PostMapping("/token-check")
-    public ResponseEntity<LoginResponseDTO> checkTokenValidity(@CookieValue(name = "jwtToken", required = false) String jwtToken) {
-
-        if (!rateLimiterService.allowRequest(jwtToken)) {
-            return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).build();
-        }
-
+    public ResponseEntity<LoginResponseDTO> checkTokenValidity(@CookieValue(name = "jwtToken", required = false) String jwtToken) throws RateLimitReachedException, ExpiredTokenException {
         if (jwtToken != null ) {
             User user = loginService.getCurrentSession(jwtToken);
             if (user != null) {
+                if (!rateLimiterService.allowRequest(jwtToken)) {
+                    throw new RateLimitReachedException("Too many requests. Try again later.");
+                }
+
                 LoginResponseDTO loginResponseDTO = new LoginResponseDTO(user);
                 return ResponseEntity.ok(loginResponseDTO);
             }
+            throw new ExpiredTokenException("Expired token. Please try again.");
         }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // Unauthorized
+        throw new ExpiredTokenException("You have been logged out.");
     }
 
     @GetMapping("/logout")
-    public ResponseEntity<String> invalidateToken(@CookieValue(name = "jwtToken", required = false) String token, HttpServletResponse response) {
+    public ResponseEntity<Object> invalidateToken(@CookieValue(name = "jwtToken", required = false) String token, HttpServletResponse response) {
         if (token != null) {
             // Invalidate the token
             loginService.invalidateCurrentSession(token);
@@ -79,9 +81,9 @@ public class LoginController {
             // Clear the JWT cookie
             clearTokenCookie(response);
 
-            return ResponseEntity.ok("Logout successful!");
+            return ResponseEntity.ok(null);
         }
-        return ResponseEntity.status(400).body("No token found");
+        throw new ExpiredTokenException("Expired token. Please try again.");
     }
 
     private void setTokenAsHttpOnlyCookie(HttpServletResponse response, String token) {

@@ -27,11 +27,11 @@ public class LoginService {
 
         // Check if the user was found
         if (foundUserOpt.isEmpty()) {
-            Optional<User> foundUserByEmail = Optional.ofNullable(loginRepository.getUserByEmail(email));
-            if (foundUserByEmail.isPresent()) {
-                throw new WrongPasswordException("Password of " + email + " is incorrect");
-            }
-            throw new UserNotFoundException("User with email " + email + " not found");
+//            Optional<User> foundUserByEmail = Optional.ofNullable(loginRepository.getUserByEmail(email));
+//            if (foundUserByEmail.isPresent()) {
+//                return new User();
+//            }
+            return null;
         }
 
         // Map the user details and generate a JWT token
@@ -54,7 +54,7 @@ public class LoginService {
         // Find the user associated with the token
         Optional<User> foundUserOpt = Optional.ofNullable(loginRepository.getUserByExpirationToken(token));
         if (foundUserOpt.isEmpty()) {
-            throw new UserNotFoundException("User with token " + token + " not found");
+            return null;
         }
 
         // Check if the token has expired
@@ -64,7 +64,7 @@ public class LoginService {
                 foundUser.setExpirationDate(null);
                 loginRepository.save(foundUser);
             });
-            throw new ExpiredTokenException("Token " + token + " has expired");
+            return null;
         }
 
         return foundUserOpt.get();
@@ -73,9 +73,6 @@ public class LoginService {
     public void invalidateCurrentSession(String token) {
         // Find the user associated with the token
         Optional<User> foundUserOpt = Optional.ofNullable(loginRepository.getUserByExpirationToken(token));
-        if (foundUserOpt.isEmpty()) {
-            throw new UserNotFoundException("User with token " + token + " not found");
-        }
 
         // Invalidate the token
         foundUserOpt.ifPresent(foundUser -> {
