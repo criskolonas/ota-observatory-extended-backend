@@ -1,14 +1,13 @@
 package gr.alexc.otaobservatory.dto;
 
-import gr.alexc.otaobservatory.entity.User;
+import lombok.Getter;
+import lombok.Setter;
 
+@Setter
+@Getter
 public class RegisterResponseDTO {
 
     private String email;
-    private String userName;
+    private String username;
 
-    public RegisterResponseDTO(User user) {
-        this.userName = user.getUsername();
-        this.email = user.getPassword();
-    }
 }

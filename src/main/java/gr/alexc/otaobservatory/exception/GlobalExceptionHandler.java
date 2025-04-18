@@ -28,6 +28,11 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.UNAUTHORIZED);
     }
 
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public ResponseEntity<String> handleUserAlreadyExistsException(UserAlreadyExistsException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
+    }
+
     @ExceptionHandler(RateLimitReachedException.class)
     public ResponseEntity<String> handleRateLimitReachedException(RateLimitReachedException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.TOO_MANY_REQUESTS);
