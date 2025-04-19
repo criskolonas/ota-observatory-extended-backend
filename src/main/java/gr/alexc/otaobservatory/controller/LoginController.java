@@ -7,13 +7,12 @@ import gr.alexc.otaobservatory.entity.User;
 import gr.alexc.otaobservatory.exception.ExpiredTokenException;
 import gr.alexc.otaobservatory.exception.RateLimitReachedException;
 import gr.alexc.otaobservatory.exception.UserNotFoundException;
-import gr.alexc.otaobservatory.repository.ota.LoginRepository;
+import gr.alexc.otaobservatory.repository.ota.UserRepository;
 import gr.alexc.otaobservatory.service.JWTUtilService;
 import gr.alexc.otaobservatory.service.LoginService;
 import gr.alexc.otaobservatory.service.RateLimiterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,7 +27,7 @@ public class LoginController {
     private final RateLimiterService rateLimiterService;
 
     @Autowired
-    public LoginController(LoginRepository loginRepository, LoginMapper loginMapper, JWTUtilService jwtUtilService, RateLimiterService rateLimiterService, LoginService loginService, JWTUtilService jwtUtilService1) {
+    public LoginController(UserRepository userRepository, LoginMapper loginMapper, JWTUtilService jwtUtilService, RateLimiterService rateLimiterService, LoginService loginService, JWTUtilService jwtUtilService1) {
         this.loginService = loginService;
         this.jwtUtilService = jwtUtilService1;
         this.rateLimiterService = rateLimiterService;

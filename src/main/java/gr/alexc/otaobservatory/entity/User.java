@@ -26,6 +26,8 @@ public class User {
 
     private Date expirationDate;
 
+    private Boolean is_admin;
+
     private Date  created_at;
 
 }

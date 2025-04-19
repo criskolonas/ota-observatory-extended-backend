@@ -2,10 +2,7 @@ package gr.alexc.otaobservatory.service;
 
 import gr.alexc.otaobservatory.dto.mapper.LoginMapper;
 import gr.alexc.otaobservatory.entity.User;
-import gr.alexc.otaobservatory.exception.ExpiredTokenException;
-import gr.alexc.otaobservatory.exception.UserNotFoundException;
-import gr.alexc.otaobservatory.exception.WrongPasswordException;
-import gr.alexc.otaobservatory.repository.ota.LoginRepository;
+import gr.alexc.otaobservatory.repository.ota.UserRepository;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,13 +14,13 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class LoginService {
 
-    private final LoginRepository loginRepository;
+    private final UserRepository userRepository;
     private final LoginMapper loginMapper;
     private final JWTUtilService jwtUtilService;
 
 
     public User getUser(String email, String password) {
-        Optional<User> foundUserOpt = Optional.ofNullable(loginRepository.getUser(email, password));
+        Optional<User> foundUserOpt = Optional.ofNullable(userRepository.getUser(email, password));
 
         // Check if the user was found
         if (foundUserOpt.isEmpty()) {
@@ -35,7 +32,7 @@ public class LoginService {
         }
 
         // Map the user details and generate a JWT token
-        User userDetails = loginMapper.logintoUserDTO(loginRepository.getUser(email, password));
+        User userDetails = loginMapper.logintoUserDTO(userRepository.getUser(email, password));
         String jwtToken = jwtUtilService.generateToken(userDetails);
 
         // Set the token and expiration date in the user object
@@ -43,7 +40,7 @@ public class LoginService {
         userDetails.setExpirationDate(jwtUtilService.extractClaim(jwtToken, Claims::getExpiration));
 
         // Save the updated user details
-        return loginRepository.save(userDetails);
+        return userRepository.save(userDetails);
     }
 
     public User getCurrentSession(String token) {
@@ -52,7 +49,7 @@ public class LoginService {
         Date extractedClaimExpiration = jwtUtilService.extractClaim(token, Claims::getExpiration);
 
         // Find the user associated with the token
-        Optional<User> foundUserOpt = Optional.ofNullable(loginRepository.getUserByExpirationToken(token));
+        Optional<User> foundUserOpt = Optional.ofNullable(userRepository.getUserByExpirationToken(token));
         if (foundUserOpt.isEmpty()) {
             return null;
         }
@@ -62,7 +59,7 @@ public class LoginService {
             foundUserOpt.ifPresent(foundUser -> {
                 foundUser.setToken(null); // Invalidate the token
                 foundUser.setExpirationDate(null);
-                loginRepository.save(foundUser);
+                userRepository.save(foundUser);
             });
             return null;
         }
@@ -72,13 +69,13 @@ public class LoginService {
 
     public void invalidateCurrentSession(String token) {
         // Find the user associated with the token
-        Optional<User> foundUserOpt = Optional.ofNullable(loginRepository.getUserByExpirationToken(token));
+        Optional<User> foundUserOpt = Optional.ofNullable(userRepository.getUserByExpirationToken(token));
 
         // Invalidate the token
         foundUserOpt.ifPresent(foundUser -> {
             foundUser.setToken(null);
             foundUser.setExpirationDate(null);
-            loginRepository.save(foundUser);
+            userRepository.save(foundUser);
         });
 
     }

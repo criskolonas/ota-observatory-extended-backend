@@ -20,9 +20,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class RegisterController {
 
-    private final RegisterService registerService;
     private final JWTUtilService jwtUtilService;
-    private final LoginService loginService;
+    private final RegisterService registerService;
 
     @PostMapping("register")
     public ResponseEntity<RegisterResponseDTO> postUser(@RequestBody RegisterRequestDTO request, HttpServletResponse response) {
