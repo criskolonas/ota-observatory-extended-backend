@@ -1,5 +1,6 @@
 package gr.alexc.otaobservatory.service;
 
+import gr.alexc.otaobservatory.dto.UserModificationDetailsResponseDTO;
 import gr.alexc.otaobservatory.dto.UserModificationPermissionsRequestDTO;
 import gr.alexc.otaobservatory.dto.UserModificationPermissionsResponseDTO;
 import gr.alexc.otaobservatory.dto.mapper.UserModificationMapper;
@@ -39,7 +40,12 @@ public class UserModificationService {
 
         userRepository.saveAll(updatedUsers);
 
-        // You can customize the response DTO as needed
         return userModificationMapper.userToPermissionsReq(updatedUsers);
+    }
+
+    public List<UserModificationDetailsResponseDTO> getAllUsers() {
+        List<User> users = userRepository.findAll();
+
+        return userModificationMapper.userToDetailsReq(users);
     }
 }
