@@ -37,7 +37,6 @@ public class LoginService {
 
         // Set the token and expiration date in the user object
         userDetails.setToken(jwtToken);
-        userDetails.setExpirationDate(jwtUtilService.extractClaim(jwtToken, Claims::getExpiration));
 
         // Save the updated user details
         return userRepository.save(userDetails);
@@ -58,7 +57,6 @@ public class LoginService {
         if (extractedClaimExpiration.getTime() <= System.currentTimeMillis()) {
             foundUserOpt.ifPresent(foundUser -> {
                 foundUser.setToken(null); // Invalidate the token
-                foundUser.setExpirationDate(null);
                 userRepository.save(foundUser);
             });
             return null;
@@ -74,7 +72,6 @@ public class LoginService {
         // Invalidate the token
         foundUserOpt.ifPresent(foundUser -> {
             foundUser.setToken(null);
-            foundUser.setExpirationDate(null);
             userRepository.save(foundUser);
         });
 

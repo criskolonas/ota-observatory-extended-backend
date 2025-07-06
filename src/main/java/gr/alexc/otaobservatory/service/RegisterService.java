@@ -33,7 +33,6 @@ public class RegisterService {
             jwtToken = jwtUtilService.generateToken(newUserEntry);
 
             newUserEntry.setToken(jwtToken);
-            newUserEntry.setExpirationDate(jwtUtilService.extractClaim(newUserEntry.getToken(), Claims::getExpiration));
 
             userRepository.save(newUserEntry);
 
