@@ -1,8 +1,11 @@
 package gr.alexc.otaobservatory.dto;
 
+import gr.alexc.otaobservatory.entity.Role;
 import gr.alexc.otaobservatory.entity.User;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Collection;
 
 @Getter
 @Setter
@@ -10,11 +13,11 @@ public class LoginResponseDTO {
 
     private String email;
     private String username;
-    private Boolean is_admin;
+    private Collection<Role> role;
 
     public LoginResponseDTO(User user) {
         this.username = user.getUsername();
         this.email = user.getEmail();
-        this.is_admin = user.getIs_admin();
+        this.role = user.getRole();
     }
 }

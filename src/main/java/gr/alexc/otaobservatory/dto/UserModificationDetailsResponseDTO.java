@@ -11,5 +11,4 @@ public class UserModificationDetailsResponseDTO {
     private String email;
     private String username;
     private Date created_at;
-    private Boolean is_admin;
 }

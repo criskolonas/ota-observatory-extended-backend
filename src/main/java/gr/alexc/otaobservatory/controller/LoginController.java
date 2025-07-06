@@ -2,12 +2,10 @@ package gr.alexc.otaobservatory.controller;
 
 import gr.alexc.otaobservatory.dto.LoginRequestDTO;
 import gr.alexc.otaobservatory.dto.LoginResponseDTO;
-import gr.alexc.otaobservatory.dto.mapper.LoginMapper;
 import gr.alexc.otaobservatory.entity.User;
 import gr.alexc.otaobservatory.exception.ExpiredTokenException;
 import gr.alexc.otaobservatory.exception.RateLimitReachedException;
 import gr.alexc.otaobservatory.exception.UserNotFoundException;
-import gr.alexc.otaobservatory.repository.ota.UserRepository;
 import gr.alexc.otaobservatory.service.JWTUtilService;
 import gr.alexc.otaobservatory.service.LoginService;
 import gr.alexc.otaobservatory.service.RateLimiterService;
@@ -27,7 +25,7 @@ public class LoginController {
     private final RateLimiterService rateLimiterService;
 
     @Autowired
-    public LoginController(UserRepository userRepository, LoginMapper loginMapper, JWTUtilService jwtUtilService, RateLimiterService rateLimiterService, LoginService loginService, JWTUtilService jwtUtilService1) {
+    public LoginController(RateLimiterService rateLimiterService, LoginService loginService, JWTUtilService jwtUtilService1) {
         this.loginService = loginService;
         this.jwtUtilService = jwtUtilService1;
         this.rateLimiterService = rateLimiterService;
@@ -71,7 +69,7 @@ public class LoginController {
         throw new ExpiredTokenException("You have been logged out.");
     }
 
-    @GetMapping("/logout")
+    @PostMapping("/api/logout")
     public ResponseEntity<Object> invalidateToken(@CookieValue(name = "jwtToken", required = false) String token, HttpServletResponse response) {
         if (token != null) {
             // Invalidate the token

@@ -18,7 +18,7 @@ public class UserModificationController {
 
     private final UserModificationService userModificationService;
 
-    @PostMapping("change-permissions")
+    @PostMapping("api/admin/change-permissions")
     public ResponseEntity<List<UserModificationPermissionsResponseDTO>> changeUserPermissions(@RequestBody List<UserModificationPermissionsRequestDTO> request, HttpServletResponse response) {
 
       List<UserModificationPermissionsResponseDTO> changedUsers = this.userModificationService.changeUserPermissions(request);
@@ -26,7 +26,7 @@ public class UserModificationController {
         return ResponseEntity.ok(changedUsers);
     }
 
-    @GetMapping("all-users")
+    @GetMapping("api/admin/all-users")
     public ResponseEntity<List<UserModificationDetailsResponseDTO>> changeUserPermissions(@CookieValue(name = "jwtToken", required = false) String jwtToken) {
         //TODO Check token is of admin user
 

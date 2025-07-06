@@ -1,5 +1,6 @@
 package gr.alexc.otaobservatory.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,6 +16,7 @@ public class Role {
     private Long id;
 
     private String name;
+    @JsonBackReference
     @ManyToMany(mappedBy = "role")
     private Collection<User> users;
 }

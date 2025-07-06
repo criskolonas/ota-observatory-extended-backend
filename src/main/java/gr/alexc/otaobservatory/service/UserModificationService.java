@@ -30,7 +30,6 @@ public class UserModificationService {
             User userFound = userRepository.getUserByEmail(request.getEmail());
 
             if (userFound != null) {
-                userFound.setIs_admin(request.getIs_admin());
                 updatedUsers.add(userFound);
             } else {
                 // Optional: Handle case when user is not found

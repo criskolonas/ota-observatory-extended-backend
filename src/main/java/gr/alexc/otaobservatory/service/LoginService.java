@@ -1,6 +1,5 @@
 package gr.alexc.otaobservatory.service;
 
-import gr.alexc.otaobservatory.dto.mapper.LoginMapper;
 import gr.alexc.otaobservatory.entity.User;
 import gr.alexc.otaobservatory.repository.ota.UserRepository;
 import io.jsonwebtoken.Claims;
@@ -15,7 +14,6 @@ import java.util.Optional;
 public class LoginService {
 
     private final UserRepository userRepository;
-    private final LoginMapper loginMapper;
     private final JWTUtilService jwtUtilService;
 
 
@@ -32,7 +30,7 @@ public class LoginService {
         }
 
         // Map the user details and generate a JWT token
-        User userDetails = loginMapper.logintoUserDTO(userRepository.getUser(email, password));
+        User userDetails = userRepository.getUser(email, password);
         String jwtToken = jwtUtilService.generateToken(userDetails);
 
         // Set the token and expiration date in the user object

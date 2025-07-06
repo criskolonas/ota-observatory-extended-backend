@@ -7,5 +7,4 @@ import lombok.Setter;
 @Getter
 public class UserModificationPermissionsResponseDTO {
     private String email;
-    private Boolean is_admin;
 }

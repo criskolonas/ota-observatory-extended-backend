@@ -14,13 +14,9 @@ import java.util.List;
 public interface UserModificationMapper {
     @Mappings({
             @Mapping(source = "email", target = "email"),
-            @Mapping(source = "is_admin", target = "is_admin")
     })
     List<UserModificationPermissionsResponseDTO> userToPermissionsReq(List<User> user);
 
-    @Mappings({
-            @Mapping(source = "is_admin", target = "is_admin")
-    })
     List<UserModificationDetailsResponseDTO> userToDetailsReq(List<User> user);
 
 }
