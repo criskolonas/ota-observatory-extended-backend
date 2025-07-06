@@ -35,7 +35,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("[JwtAuthFilter] Authentication: " + auth);
         if (auth == null || auth instanceof AnonymousAuthenticationToken) {
             String token = null;
             Cookie[] cookies = request.getCookies();
@@ -53,17 +52,14 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             if (token != null && jwtUtilService.isTokenValid(token)) {
                 String username = jwtUtilService.extractUsername(token);
                 Collection<String> roles = jwtUtilService.extractRoleNames(token);
-                System.out.println("[JwtAuthFilter] JWT Token and roles: " + token + roles);
                 List<GrantedAuthority> authorities = roles.stream()
                         .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
                         .collect(Collectors.toList());
-                System.out.println(authorities);
 
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(username, null, authorities);
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-                System.out.println(      authentication + " :;"+        SecurityContextHolder.getContext().getAuthentication());
             }
         }
 
