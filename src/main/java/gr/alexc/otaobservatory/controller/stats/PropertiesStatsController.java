@@ -19,7 +19,7 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("stats/properties")
+@RequestMapping("api/user/stats/properties")
 public class PropertiesStatsController {
     private final PropertiesStatsService service;
 

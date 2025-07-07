@@ -23,7 +23,7 @@ public class RegisterController {
     private final JWTUtilService jwtUtilService;
     private final RegisterService registerService;
 
-    @PostMapping("register")
+    @PostMapping("api/register")
     public ResponseEntity<RegisterResponseDTO> postUser(@RequestBody RegisterRequestDTO request, HttpServletResponse response) {
 
         Optional<User> foundUser = this.registerService.getUser(request);

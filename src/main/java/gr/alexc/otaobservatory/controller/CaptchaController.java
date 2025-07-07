@@ -19,7 +19,7 @@ public class CaptchaController{
         this.captchaService = captchaService;
     }
 
-    @PostMapping("/recaptcha")
+    @PostMapping("api/recaptcha")
     public ResponseEntity<CaptchaRequestDTO> verifyCaptcha(@RequestBody CaptchaRequestDTO request) {
         boolean isValid = captchaService.verifyCaptcha(request.getCaptchaResponse());
 

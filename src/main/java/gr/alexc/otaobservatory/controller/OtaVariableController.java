@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("ota-variables")
+@RequestMapping("api/user/ota-variables")
 public class OtaVariableController {
 
     private final OtaVariableService otaVariableService;

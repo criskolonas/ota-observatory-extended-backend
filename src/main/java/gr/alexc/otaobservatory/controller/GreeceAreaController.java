@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("greece-areas")
+@RequestMapping("api/user/greece-areas")
 public class GreeceAreaController {
 
     private final GreeceAreaService greeceAreaService;

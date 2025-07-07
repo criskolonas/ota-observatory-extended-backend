@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("prefectureCapitals")
+@RequestMapping("api/user/prefectureCapitals")
 @RequiredArgsConstructor
 public class PrefectureCapitalController {
     private final PrefectureCapitalService prefectureCapitalService;

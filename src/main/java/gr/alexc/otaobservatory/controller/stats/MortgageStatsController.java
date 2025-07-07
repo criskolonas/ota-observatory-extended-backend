@@ -15,7 +15,7 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("stats/mortgages")
+@RequestMapping("api/user/stats/mortgages")
 public class MortgageStatsController {
     private final MortgageStatsService service;
 

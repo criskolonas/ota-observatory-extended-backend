@@ -15,7 +15,7 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("stats/areas")
+@RequestMapping("api/user/stats/areas")
 public class AreaStatsController {
     private final AreaStatsService service;
 

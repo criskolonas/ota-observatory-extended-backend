@@ -16,7 +16,7 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("stats/confiscations")
+@RequestMapping("api/user/stats/confiscations")
 public class ConfiscationStatsController {
 
     private final ConfiscationStatsService service;

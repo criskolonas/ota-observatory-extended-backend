@@ -31,7 +31,7 @@ public class LoginController {
         this.rateLimiterService = rateLimiterService;
     }
 
-    @PostMapping("/login")
+    @PostMapping("api/login")
     public ResponseEntity<LoginResponseDTO> postUser(@RequestBody LoginRequestDTO loginRequest, HttpServletResponse response) throws UserNotFoundException {
 
         // Authenticate the user
@@ -52,7 +52,7 @@ public class LoginController {
         }
     }
 
-    @PostMapping("/token-check")
+    @PostMapping("api/user/token-check")
     public ResponseEntity<LoginResponseDTO> checkTokenValidity(@CookieValue(name = "jwtToken", required = false) String jwtToken) throws RateLimitReachedException, ExpiredTokenException {
         if (jwtToken != null ) {
             User user = loginService.getCurrentSession(jwtToken);
@@ -69,7 +69,7 @@ public class LoginController {
         throw new ExpiredTokenException("You have been logged out.");
     }
 
-    @PostMapping("/api/logout")
+    @PostMapping("/api/user/logout")
     public ResponseEntity<Object> invalidateToken(@CookieValue(name = "jwtToken", required = false) String token, HttpServletResponse response) {
         if (token != null) {
             // Invalidate the token
