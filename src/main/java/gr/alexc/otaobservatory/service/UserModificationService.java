@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -20,6 +19,7 @@ public class UserModificationService {
 
     private final UserRepository userRepository;
     private final UserModificationMapper userModificationMapper;
+    private final UserRoleService userRoleService ;
 
 
     @Transactional
@@ -28,9 +28,8 @@ public class UserModificationService {
 
         for (UserModificationPermissionsRequestDTO request : requests) {
             User userFound = userRepository.getUserByEmail(request.getEmail());
-
             if (userFound != null) {
-                updatedUsers.add(userFound);
+                userRoleService.changeAdminRole(request.getEmail(),request.getIsAdmin());
             } else {
                 // Optional: Handle case when user is not found
                 // e.g. throw an exception or skip
