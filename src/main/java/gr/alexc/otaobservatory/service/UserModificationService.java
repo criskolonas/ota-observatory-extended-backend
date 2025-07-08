@@ -4,13 +4,16 @@ import gr.alexc.otaobservatory.dto.UserModificationDetailsResponseDTO;
 import gr.alexc.otaobservatory.dto.UserModificationPermissionsRequestDTO;
 import gr.alexc.otaobservatory.dto.UserModificationPermissionsResponseDTO;
 import gr.alexc.otaobservatory.dto.mapper.UserModificationMapper;
+import gr.alexc.otaobservatory.entity.Role;
 import gr.alexc.otaobservatory.entity.User;
+import gr.alexc.otaobservatory.repository.ota.RoleRepository;
 import gr.alexc.otaobservatory.repository.ota.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -19,18 +22,36 @@ public class UserModificationService {
 
     private final UserRepository userRepository;
     private final UserModificationMapper userModificationMapper;
-    private final UserRoleService userRoleService ;
-
+    private final RoleRepository roleRepo;
 
     @Transactional
-    public List<UserModificationPermissionsResponseDTO> changeUserPermissions(List<UserModificationPermissionsRequestDTO> requests) {
+    public Boolean changeUserPermissions(List<UserModificationPermissionsRequestDTO> requests) {
         List<User> updatedUsers = new ArrayList<>();
 
         for (UserModificationPermissionsRequestDTO request : requests) {
             User userFound = userRepository.getUserByEmail(request.getEmail());
             if (userFound != null) {
-                userRoleService.changeAdminRole(request.getEmail(),request.getIsAdmin());
-            } else {
+                User user = userRepository.getUserByEmail(request.getEmail());
+                Role role = roleRepo.findById(1L).orElse(null);
+
+                if (user == null || role == null) {
+                    return false;
+                }
+
+                Collection<Role> roles = user.getRole();
+
+                if(user.getRole().contains(role)){
+                    if(!request.getIsAdmin()){
+                        roles.remove(role);
+                    }
+                }else{
+                    if(!request.getIsAdmin()){
+                        roles.add(role);
+                    }
+                }
+
+                userRepository.save(user);            }
+            else {
                 // Optional: Handle case when user is not found
                 // e.g. throw an exception or skip
             }
@@ -38,7 +59,7 @@ public class UserModificationService {
 
         userRepository.saveAll(updatedUsers);
 
-        return userModificationMapper.userToPermissionsReq(updatedUsers);
+        return true;
     }
 
     public List<UserModificationDetailsResponseDTO> getAllUsers() {

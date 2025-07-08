@@ -19,9 +19,9 @@ public class UserModificationController {
     private final UserModificationService userModificationService;
 
     @PostMapping("api/admin/change-permissions")
-    public ResponseEntity<List<UserModificationPermissionsResponseDTO>> changeUserPermissions(@RequestBody List<UserModificationPermissionsRequestDTO> request, HttpServletResponse response) {
+    public ResponseEntity<Boolean> changeUserPermissions(@RequestBody List<UserModificationPermissionsRequestDTO> request, HttpServletResponse response) {
 
-      List<UserModificationPermissionsResponseDTO> changedUsers = this.userModificationService.changeUserPermissions(request);
+     Boolean changedUsers = this.userModificationService.changeUserPermissions(request);
 
         return ResponseEntity.ok(changedUsers);
     }
