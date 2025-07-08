@@ -2,6 +2,7 @@ package gr.alexc.otaobservatory.service;
 
 import io.github.bucket4j.Bucket;
 import io.github.bucket4j.BucketConfiguration;
+import lombok.Getter;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -9,6 +10,7 @@ import java.util.Map;
 @Service
 public class RateLimiterService {
 
+    @Getter
     private final Map<String, Bucket> buckets;
     private final BucketConfiguration bucketConfig;
 

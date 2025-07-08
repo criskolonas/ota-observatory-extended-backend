@@ -26,7 +26,7 @@ public class RateLimiterConfig {
     public BucketConfiguration bucketConfig() {
         // Allow 10 requests per minute
         return BucketConfiguration.builder()
-                .addLimit(Bandwidth.classic(100, Refill.intervally(10, Duration.ofMinutes(1))))
+                .addLimit(Bandwidth.classic(50, Refill.intervally(10, Duration.ofMinutes(1))))
                 .build();
     }
 }

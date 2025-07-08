@@ -57,9 +57,6 @@ public class LoginController {
         if (jwtToken != null ) {
             User user = loginService.getCurrentSession(jwtToken);
             if (user != null) {
-                if (!rateLimiterService.allowRequest(jwtToken)) {
-                    throw new RateLimitReachedException("Too many requests. Try again later.");
-                }
 
                 LoginResponseDTO loginResponseDTO = new LoginResponseDTO(user);
                 return ResponseEntity.ok(loginResponseDTO);
