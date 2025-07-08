@@ -1,77 +1,79 @@
 package gr.alexc.otaobservatory.service;
 
+import gr.alexc.otaobservatory.dto.LoginResponseDTO;
+import gr.alexc.otaobservatory.dto.mapper.LoginMapper;
 import gr.alexc.otaobservatory.entity.User;
+import gr.alexc.otaobservatory.exception.ExpiredTokenException;
+import gr.alexc.otaobservatory.exception.WrongPasswordException;
 import gr.alexc.otaobservatory.repository.ota.UserRepository;
 import io.jsonwebtoken.Claims;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class LoginService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoderService passwordEncoderService;
     private final JWTUtilService jwtUtilService;
+    private final LoginMapper loginMapper;
 
 
-    public User getUser(String email, String password) {
-        Optional<User> foundUserOpt = Optional.ofNullable(userRepository.getUser(email, password));
+    public LoginResponseDTO getUser(String email, String password, HttpServletResponse response) {
 
-        // Check if the user was found
-        if (foundUserOpt.isEmpty()) {
-//            Optional<User> foundUserByEmail = Optional.ofNullable(loginRepository.getUserByEmail(email));
-//            if (foundUserByEmail.isPresent()) {
-//                return new User();
-//            }
-            return null;
+        User foundUser = userRepository.getUserByEmail(email).orElseThrow(()-> new EntityNotFoundException("Ο χρήστης δεν βρέθηκε."));
+        System.out.println(foundUser.getEmail() +"1"+foundUser.getPassword());
+
+        Boolean isPasswordMatch = passwordEncoderService.comparePassword(password, foundUser.getPassword());
+
+        if (!isPasswordMatch) {
+            throw new WrongPasswordException("Λάθος κωδικός πρόσβασης");
         }
+        System.out.println(foundUser.getEmail() +"2"+foundUser.getPassword());
 
-        // Map the user details and generate a JWT token
-        User userDetails = userRepository.getUser(email, password);
-        String jwtToken = jwtUtilService.generateToken(userDetails);
+        String jwtToken = jwtUtilService.generateToken(foundUser);
+        this.jwtUtilService.setTokenAsHttpOnlyCookie(response, jwtToken);
+        System.out.println(foundUser.getEmail() +"3"+foundUser.getPassword());
 
-        // Set the token and expiration date in the user object
-        userDetails.setToken(jwtToken);
+        foundUser.setToken(jwtToken);
+        userRepository.save(foundUser);
+        System.out.println(foundUser.getEmail() +"4"+foundUser.getPassword());
 
-        // Save the updated user details
-        return userRepository.save(userDetails);
+        return loginMapper.toDto(foundUser);
     }
 
-    public User getCurrentSession(String token) {
+    public LoginResponseDTO getCurrentSession(String token) {
         // Extract the token's expiration date
 
         Date extractedClaimExpiration = jwtUtilService.extractClaim(token, Claims::getExpiration);
 
         // Find the user associated with the token
-        Optional<User> foundUserOpt = Optional.ofNullable(userRepository.getUserByExpirationToken(token));
-        if (foundUserOpt.isEmpty()) {
-            return null;
-        }
+        User foundUser = userRepository.getUserByExpirationToken(token).orElseThrow(()-> new EntityNotFoundException("Ο χρήστης δεν βρέθηκε."));
 
         // Check if the token has expired
         if (extractedClaimExpiration.getTime() <= System.currentTimeMillis()) {
-            foundUserOpt.ifPresent(foundUser -> {
-                foundUser.setToken(null); // Invalidate the token
-                userRepository.save(foundUser);
-            });
-            return null;
+
+            foundUser.setToken(null); // Invalidate the token
+            userRepository.save(foundUser);
+
+            throw new ExpiredTokenException("Η συνεδρία έχει λήξει");
         }
 
-        return foundUserOpt.get();
+        return loginMapper.toDto(foundUser);
     }
 
-    public void invalidateCurrentSession(String token) {
+    public void invalidateCurrentSession(String token, HttpServletResponse response) {
         // Find the user associated with the token
-        Optional<User> foundUserOpt = Optional.ofNullable(userRepository.getUserByExpirationToken(token));
+        User foundUser = userRepository.getUserByExpirationToken(token).orElseThrow(()-> new EntityNotFoundException("Ο χρήστης δεν βρέθηκε."));
+        this.jwtUtilService.clearTokenCookie(response);
 
-        // Invalidate the token
-        foundUserOpt.ifPresent(foundUser -> {
-            foundUser.setToken(null);
-            userRepository.save(foundUser);
-        });
+        foundUser.setToken(null);
+        userRepository.save(foundUser);
 
     }
 }

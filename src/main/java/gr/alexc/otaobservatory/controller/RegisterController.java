@@ -20,31 +20,13 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class RegisterController {
 
-    private final JWTUtilService jwtUtilService;
     private final RegisterService registerService;
 
     @PostMapping("api/register")
     public ResponseEntity<RegisterResponseDTO> postUser(@RequestBody RegisterRequestDTO request, HttpServletResponse response) {
+        RegisterResponseDTO registeredUser = registerService.createUser(request,response);
 
-        Optional<User> foundUser = this.registerService.getUser(request);
-        //check if user with email exists
-        if(foundUser.isPresent()){
-            throw new UserAlreadyExistsException("User already exists");
-        }
-        //register the user
-        RegisterResponseDTO registeredUser = registerService.createUser(request);
+        return ResponseEntity.ok(registeredUser);
 
-        foundUser = this.registerService.getUser(request);
-
-
-        if(foundUser.isPresent()) {
-            User user = foundUser.get();
-            String token = jwtUtilService.generateToken(user);
-
-            this.jwtUtilService.setTokenAsHttpOnlyCookie(response, token);
-            return ResponseEntity.ok(registeredUser);
-        }
-
-        return ResponseEntity.badRequest().body(registeredUser);
     }
 }

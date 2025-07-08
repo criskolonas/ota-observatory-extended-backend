@@ -15,9 +15,4 @@ public class LoginResponseDTO {
     private String username;
     private Collection<Role> role;
 
-    public LoginResponseDTO(User user) {
-        this.username = user.getUsername();
-        this.email = user.getEmail();
-        this.role = user.getRole();
-    }
 }

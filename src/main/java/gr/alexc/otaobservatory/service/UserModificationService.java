@@ -8,6 +8,7 @@ import gr.alexc.otaobservatory.entity.Role;
 import gr.alexc.otaobservatory.entity.User;
 import gr.alexc.otaobservatory.repository.ota.RoleRepository;
 import gr.alexc.otaobservatory.repository.ota.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,9 +30,8 @@ public class UserModificationService {
         List<User> updatedUsers = new ArrayList<>();
 
         for (UserModificationPermissionsRequestDTO request : requests) {
-            User userFound = userRepository.getUserByEmail(request.getEmail());
-            if (userFound != null) {
-                User user = userRepository.getUserByEmail(request.getEmail());
+
+            User user = userRepository.getUserByEmail(request.getEmail()).orElseThrow(()-> new EntityNotFoundException("Ο χρήστης δεν βρέθηκε."));
                 Role role = roleRepo.findById(1L).orElse(null);
 
                 if (user == null || role == null) {
@@ -50,11 +50,7 @@ public class UserModificationService {
                     }
                 }
 
-                userRepository.save(user);            }
-            else {
-                // Optional: Handle case when user is not found
-                // e.g. throw an exception or skip
-            }
+                userRepository.save(user);
         }
 
         userRepository.saveAll(updatedUsers);

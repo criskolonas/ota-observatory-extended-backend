@@ -2,7 +2,6 @@ package gr.alexc.otaobservatory.service;
 
 import gr.alexc.otaobservatory.configuration.CaptchaConfig;
 import gr.alexc.otaobservatory.dto.CaptchaResponseDTO;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
