@@ -25,17 +25,16 @@ public class UserModificationService {
     private final UserModificationMapper userModificationMapper;
     private final RoleRepository roleRepo;
 
-    @Transactional
-    public Boolean changeUserPermissions(List<UserModificationPermissionsRequestDTO> requests) {
+    public List<User> changeUserPermissions(List<UserModificationPermissionsRequestDTO> requests) {
         List<User> updatedUsers = new ArrayList<>();
+        Role role = roleRepo.findById(1L).orElse(null);
 
         for (UserModificationPermissionsRequestDTO request : requests) {
 
             User user = userRepository.getUserByEmail(request.getEmail()).orElseThrow(()-> new EntityNotFoundException("Ο χρήστης δεν βρέθηκε."));
-                Role role = roleRepo.findById(1L).orElse(null);
 
                 if (user == null || role == null) {
-                    return false;
+                    return null;
                 }
 
                 Collection<Role> roles = user.getRole();
@@ -45,17 +44,14 @@ public class UserModificationService {
                         roles.remove(role);
                     }
                 }else{
-                    if(!request.getIsAdmin()){
+                    if(request.getIsAdmin()){
                         roles.add(role);
                     }
                 }
-
-                userRepository.save(user);
+                updatedUsers.add(user);
         }
-
         userRepository.saveAll(updatedUsers);
-
-        return true;
+        return updatedUsers;
     }
 
     public List<UserModificationDetailsResponseDTO> getAllUsers() {
