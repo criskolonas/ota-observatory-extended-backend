@@ -33,11 +33,6 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler(RateLimitReachedException.class)
-    public ResponseEntity<String> handleRateLimitReachedException(RateLimitReachedException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.TOO_MANY_REQUESTS);
-    }
-
     @ExceptionHandler(ExpiredTokenException.class)
     public ResponseEntity<String> handleExpiredTokenException(ExpiredTokenException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.UNAUTHORIZED);

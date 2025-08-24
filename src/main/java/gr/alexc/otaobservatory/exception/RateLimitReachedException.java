@@ -1,6 +1,8 @@
 package gr.alexc.otaobservatory.exception;
 
-public class RateLimitReachedException extends RuntimeException {
+import org.springframework.security.core.AuthenticationException;
+
+public class RateLimitReachedException extends AuthenticationException {
   public RateLimitReachedException(String message) {
     super(message);
   }

@@ -2,14 +2,7 @@ package gr.alexc.otaobservatory.controller;
 
 import gr.alexc.otaobservatory.dto.LoginRequestDTO;
 import gr.alexc.otaobservatory.dto.LoginResponseDTO;
-import gr.alexc.otaobservatory.entity.User;
-import gr.alexc.otaobservatory.exception.ExpiredTokenException;
-import gr.alexc.otaobservatory.exception.RateLimitReachedException;
-import gr.alexc.otaobservatory.exception.UserNotFoundException;
-import gr.alexc.otaobservatory.service.JWTUtilService;
 import gr.alexc.otaobservatory.service.LoginService;
-import gr.alexc.otaobservatory.service.RateLimiterService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

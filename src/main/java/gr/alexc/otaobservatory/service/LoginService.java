@@ -4,10 +4,10 @@ import gr.alexc.otaobservatory.dto.LoginResponseDTO;
 import gr.alexc.otaobservatory.dto.mapper.LoginMapper;
 import gr.alexc.otaobservatory.entity.User;
 import gr.alexc.otaobservatory.exception.ExpiredTokenException;
+import gr.alexc.otaobservatory.exception.UserNotFoundException;
 import gr.alexc.otaobservatory.exception.WrongPasswordException;
 import gr.alexc.otaobservatory.repository.ota.UserRepository;
 import io.jsonwebtoken.Claims;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,23 +26,19 @@ public class LoginService {
 
     public LoginResponseDTO getUser(String email, String password, HttpServletResponse response) {
 
-        User foundUser = userRepository.getUserByEmail(email).orElseThrow(()-> new EntityNotFoundException("Ο χρήστης δεν βρέθηκε."));
-        System.out.println(foundUser.getEmail() +"1"+foundUser.getPassword());
+        User foundUser = userRepository.getUserByEmail(email).orElseThrow(()-> new UserNotFoundException("Ο χρήστης δεν βρέθηκε."));
 
         Boolean isPasswordMatch = passwordEncoderService.comparePassword(password, foundUser.getPassword());
 
         if (!isPasswordMatch) {
             throw new WrongPasswordException("Λάθος κωδικός πρόσβασης");
         }
-        System.out.println(foundUser.getEmail() +"2"+foundUser.getPassword());
 
         String jwtToken = jwtUtilService.generateToken(foundUser);
         this.jwtUtilService.setTokenAsHttpOnlyCookie(response, jwtToken);
-        System.out.println(foundUser.getEmail() +"3"+foundUser.getPassword());
 
         foundUser.setToken(jwtToken);
         userRepository.save(foundUser);
-        System.out.println(foundUser.getEmail() +"4"+foundUser.getPassword());
 
         return loginMapper.toDto(foundUser);
     }
@@ -53,7 +49,7 @@ public class LoginService {
         Date extractedClaimExpiration = jwtUtilService.extractClaim(token, Claims::getExpiration);
 
         // Find the user associated with the token
-        User foundUser = userRepository.getUserByExpirationToken(token).orElseThrow(()-> new EntityNotFoundException("Ο χρήστης δεν βρέθηκε."));
+        User foundUser = userRepository.getUserByExpirationToken(token).orElseThrow(()-> new UserNotFoundException("Ο χρήστης δεν βρέθηκε."));
 
         // Check if the token has expired
         if (extractedClaimExpiration.getTime() <= System.currentTimeMillis()) {
@@ -69,7 +65,7 @@ public class LoginService {
 
     public void invalidateCurrentSession(String token, HttpServletResponse response) {
         // Find the user associated with the token
-        User foundUser = userRepository.getUserByExpirationToken(token).orElseThrow(()-> new EntityNotFoundException("Ο χρήστης δεν βρέθηκε."));
+        User foundUser = userRepository.getUserByExpirationToken(token).orElseThrow(()-> new UserNotFoundException("Ο χρήστης δεν βρέθηκε."));
         this.jwtUtilService.clearTokenCookie(response);
 
         foundUser.setToken(null);

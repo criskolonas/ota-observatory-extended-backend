@@ -6,12 +6,11 @@ import gr.alexc.otaobservatory.dto.UserModificationPermissionsResponseDTO;
 import gr.alexc.otaobservatory.dto.mapper.UserModificationMapper;
 import gr.alexc.otaobservatory.entity.Role;
 import gr.alexc.otaobservatory.entity.User;
+import gr.alexc.otaobservatory.exception.UserNotFoundException;
 import gr.alexc.otaobservatory.repository.ota.RoleRepository;
 import gr.alexc.otaobservatory.repository.ota.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,7 +30,7 @@ public class UserModificationService {
 
         for (UserModificationPermissionsRequestDTO request : requests) {
 
-            User user = userRepository.getUserByEmail(request.getEmail()).orElseThrow(()-> new EntityNotFoundException("Ο χρήστης δεν βρέθηκε."));
+            User user = userRepository.getUserByEmail(request.getEmail()).orElseThrow(()-> new UserNotFoundException("Ο χρήστης δεν βρέθηκε."));
 
                 if (user == null || role == null) {
                     return null;
